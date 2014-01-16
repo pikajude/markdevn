@@ -100,6 +100,65 @@ describe Markdevn, "#to_md" do
   end
 
   it "converts horizontal rules" do
-    convert("<hr/>").should == "***"
+    convert("<ul><li>thing</li></ul><div><hr/></div><div>baz</div>").should == %Q{
+      * thing
+
+      ***
+
+      baz
+    }.strip.gsub(/^      /, "")
+  end
+
+  it "removes empty divs" do
+    convert("<div></div>").should == ""
+    convert("<div><br clear=\"none\"></div>").should == ""
+  end
+
+  it "converts links" do
+    convert("<a shape=\"rect\" href=\"http://google.com\">Link to a thing</a>").should == "[Link to a thing](http://google.com)"
+  end
+
+  it "converts todos to checkboxes" do
+    convert("<en-todo></en-todo>").should ==
+      "[ ]"
+  end
+
+  it "converts checked todos to checked checkboxes" do
+    convert("<en-todo checked=\"true\"></en-todo>").should ==
+      "[x]"
+  end
+
+  it "preserves tables" do
+    convert(%Q{
+      <table width="100%" border="1" cellspacing="0" cellpadding="2">
+        <tr>
+          <td colspan="1" rowspan="1" valign="top">
+            item 1
+          </td>
+          <td colspan="1" rowspan="1" valign="top">
+            item 2
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1" rowspan="1" valign="top">
+            item 3
+          </td>
+          <td colspan="1" rowspan="1" valign="top">
+            item 4
+          </td>
+        </tr>
+      </table>
+    }).should == %Q{
+      <table border="1" cellspacing="0" cellpadding="2">
+      <tr>
+      <td>item 1</td>
+      <td>item 2</td>
+      </tr>
+      <tr>
+      <td>item 3</td>
+      <td>item 4</td>
+      </tr>
+      </table>
+    }.strip.gsub(/^      /, "")
   end
 end
