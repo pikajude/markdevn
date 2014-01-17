@@ -1,8 +1,7 @@
 require "markdevn"
-require "test_helper"
 
 def convert(s)
-  Markdevn.to_md(wrap(s))
+  Markdevn.to_md(Markdevn.wrap(s))
 end
 
 describe Markdevn, "#to_md" do
