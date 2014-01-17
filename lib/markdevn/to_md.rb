@@ -21,7 +21,7 @@ module Markdevn
 
       fragment.map.with_index do |node, i|
         case node.name
-        when "en-note", "div"
+        when "en-note", "div", "p"
           to_md_single(node.children) + "\n\n"
         when "ol"
           to_md_single(node.children, :ol, list_depth + 1) + "\n\n"
